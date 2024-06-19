@@ -69,6 +69,24 @@ export const getAllDocs = async (req, res) => {
   }
 };
 
+export const getDocs = async (req, res) => {
+  try {
+    
+    const docs = await DocModel.find();
+    
+    if (!docs) {
+      return res.status(404).json({
+        message: "Документы не найдены",
+      });
+    }
+    res.json({ docs });
+  } catch (err) {
+    res.status(500).json({
+      message: "Ошибка сервера",
+    });
+  }
+};
+
 export const updateDoc = async (req, res) => {
   try {
     const { _id, ...docData } = req.body;

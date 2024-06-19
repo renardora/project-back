@@ -131,6 +131,7 @@ app.get("/topworker/checkSubmission", checkAuth, checkSubmission.topWorker);
 app.post("/kingdom/add", docController.addDoc);
 app.get("/kingdom/get", docController.getDoc);
 app.put("/kingdom/getAll", docController.getAllDocs);
+app.put("/kingdom/getDocs", docController.getDocs);
 app.put("/kingdom/update", docController.updateDoc);
 app.delete("/kingdom/delete", docController.deleteDoc);
 
