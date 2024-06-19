@@ -121,8 +121,6 @@ app.get("/schedule/aup/export", scheduleController.exportScheduleToAup);
 app.get("/schedule/aup/checkSubmission", checkAuth, checkSubmission.aup);
 
 app.post("/topworker/adding", topWorkerController.adding);
-app.post("/topworker/updating", topWorkerController.updating);
-app.put("/topworker/getLast", topWorkerController.getLast);
 app.get("/topworker/getAll", topWorkerController.getAll);
 app.get(
   `/topworker/getAllRating/:year/:month`,

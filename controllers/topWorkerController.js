@@ -18,44 +18,6 @@ export const adding = async (req, res) => {
   }
 };
 
-export const updating = async (req, res) => {
-  try {
-    const { _id, count } = req.body;
-
-    const topWorker = await TopWorkerModel.findOneAndUpdate(
-      { _id: _id },
-      { $inc: { count: count } },
-      { new: true }
-    );
-    if (!topWorker) {
-      return res.status(404).json({ message: "Сотрудник не найден" });
-    }
-    res.json({ message: "Голоса обновлены успешно", topWorker: topWorker });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-export const getLast = async (req, res) => {
-  try {
-    const { userId } = req.body;
-    const latestRecord = await TopWorkerModel.findOne({ userId: userId }).sort({
-      createdAt: -1,
-    });
-
-    if (!latestRecord) {
-      return res.status(404).json({
-        message: "Запись не найдена",
-      });
-    }
-    res.json({
-      latestRecord: latestRecord,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
 export const getAll = async (req, res) => {
   try {
     const currentDate = new Date();
@@ -80,14 +42,38 @@ export const getAll = async (req, res) => {
         25
       );
     }
-    const records = await TopWorkerModel.find({
-      createdAt: {
-        $gte: startDate,
-        $lte: endDate,
+    const records = await TopWorkerModel.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
       },
-    })
-      .sort({ count: -1 })
-      .populate("userId");
+      {
+        $group: {
+          _id: "$userId",
+          count: { $sum: "$count" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users", // замените "users" на имя вашей коллекции пользователей
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user", // разделяет массив user на отдельные документы
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ]);
     if (!records) return res.status(404).json({ message: "Записей нет" });
     res.json({ records });
   } catch (err) {
@@ -97,30 +83,52 @@ export const getAll = async (req, res) => {
 
 export const getAllRating = async (req, res) => {
   try {
-    // Извлекаем месяц и год из параметров запроса
     const { month, year } = req.params;
-    const currentDate = new Date();
-    const currentDay = new Date().getDate();
+    // const currentDate = new Date();
+    // const currentDay = new Date().getDate();
 
-    // Рассчитываем начальную и конечную даты на основе предоставленного месяца и года
     let startDate = new Date(year, month - 1, 26);
     let endDate = new Date(year, month % 12, 25);
 
-    if (currentDay < 26 && currentDate.getFullYear() == year && currentDate.getMonth() == month) {
-      return res.json({ records: {} });
-    }
-
-    // Ищем записи в диапазоне между начальной и конечной датами
-    const records = await TopWorkerModel.find({
-      createdAt: {
-        $gte: startDate,
-        $lte: endDate,
+    //if (currentDay < 26 && currentDate.getFullYear() == year && currentDate.getMonth() == month) {
+    //  return
+    //  res.json({ records: {} });
+    //}
+    const records = await TopWorkerModel.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
       },
-    })
-      .sort({ count: -1 })
-      .populate("userId");
-
-    if (!records) return res.status(404).json({ message: "Записей нет" });
+      {
+        $group: {
+          _id: "$userId",
+          count: { $sum: "$count" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users", // замените "users" на имя вашей коллекции пользователей
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user", // разделяет массив user на отдельные документы
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ]);
+    
+    if (!records.length)
+      return res.json({ records: [] });
 
     res.json({ records });
   } catch (err) {
