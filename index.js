@@ -14,7 +14,6 @@ import * as docController from "./controllers/docController.js";
 
 import * as topWorkerController from "./controllers/topWorkerController.js";
 
-
 dotenv.config();
 const MONGODB_URI = process.env.MONGODB_URI;
 mongoose
@@ -68,7 +67,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/docs", express.static("docs"));
 
-app.post("/auth/login",  UserController.login);
+app.post("/auth/login", UserController.login);
 app.post(
   "/auth/register",
   Validation.registerValidation,
@@ -81,13 +80,17 @@ app.delete("/users/delete", UserController.deleteUser);
 app.put("/users/update", UserController.updateUser);
 
 app.post("/uploadimage/chbr", uploadChbr.single("image"), (req, res) => {
-  res.json({ url: `/uploads/chbr/${req.file.originalname}` });
+  res.json({
+    url: `/uploads/chbr/${req.file.originalname}`,
+  });
 });
 app.post(
   "/uploadimage/managers",
   uploadManagers.single("image"),
   (req, res) => {
-    res.json({ url: `/uploads/managers/${req.file.originalname}` });
+    res.json({
+      url: `/uploads/managers/${req.file.originalname}`,
+    });
   }
 );
 
@@ -121,7 +124,10 @@ app.post("/topworker/adding", topWorkerController.adding);
 app.post("/topworker/updating", topWorkerController.updating);
 app.put("/topworker/getLast", topWorkerController.getLast);
 app.get("/topworker/getAll", topWorkerController.getAll);
-app.get(`/topworker/getAllRating/:year/:month`, topWorkerController.getAllRating);
+app.get(
+  `/topworker/getAllRating/:year/:month`,
+  topWorkerController.getAllRating
+);
 app.get("/topworker/checkSubmission", checkAuth, checkSubmission.topWorker);
 
 app.post("/kingdom/add", docController.addDoc);
