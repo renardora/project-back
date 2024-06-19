@@ -38,7 +38,23 @@ export const aupShift = async (req, res) => {
 
 export const getOnNextWeek = async (req, res) => {
   try {
-    const schedule = await ScheduleModel.find();
+    const currentDate = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+    let currentDayOfWeek = currentDate.getDay();
+
+    startDate.setDate(
+      currentDate.getDate() -
+        currentDayOfWeek +
+        (currentDayOfWeek == 0 ? -6 : 1)
+    );
+    endDate.setDate(currentDate.getDate() + (7 - currentDayOfWeek));
+    const schedule = await ScheduleModel.find({
+      date: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
     res.json(schedule);
   } catch (error) {
     console.log(error);
@@ -48,7 +64,23 @@ export const getOnNextWeek = async (req, res) => {
 
 export const getOnNextWeekAup = async (req, res) => {
   try {
-    const schedule = await ScheduleAupModel.find();
+    const currentDate = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+    let currentDayOfWeek = currentDate.getDay();
+
+    startDate.setDate(
+      currentDate.getDate() -
+        currentDayOfWeek +
+        (currentDayOfWeek == 0 ? -6 : 1)
+    );
+    endDate.setDate(currentDate.getDate() + (7 - currentDayOfWeek));
+    const schedule = await ScheduleAupModel.find({
+      date: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
     res.json(schedule);
   } catch (error) {
     console.log(error);
@@ -68,7 +100,24 @@ export const findUnique = async (req, res) => {
 
 export const exportSchedule = async (req, res) => {
   try {
-    const schedules = await ScheduleModel.find();
+    const currentDate = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+    let currentDayOfWeek = currentDate.getDay();
+
+    startDate.setDate(
+      currentDate.getDate() -
+        currentDayOfWeek +
+        (currentDayOfWeek == 0 ? -6 : 1)
+    );
+    endDate.setDate(currentDate.getDate() + (7 - currentDayOfWeek));
+
+    const schedules = await ScheduleModel.find({
+      date: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
 
     const daysOfWeek = {
       понедельник: "monday",
@@ -164,7 +213,24 @@ const formatDaySchedule = (times) => {
 
 export const exportScheduleToAup = async (req, res) => {
   try {
-    const schedules = await ScheduleAupModel.find();
+    const currentDate = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+    let currentDayOfWeek = currentDate.getDay();
+
+    startDate.setDate(
+      currentDate.getDate() -
+        currentDayOfWeek +
+        (currentDayOfWeek == 0 ? -6 : 1)
+    );
+    endDate.setDate(currentDate.getDate() + (7 - currentDayOfWeek));
+
+    const schedules = await ScheduleAupModel.find({
+      date: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
 
     const daysOfWeek = {
       понедельник: "monday",
