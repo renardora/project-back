@@ -13,6 +13,7 @@ export const shift = async (req, res) => {
     });
     const schedule = await doc.save();
     res.status(201).send("Расписание сохранено");
+    
   } catch (error) {
     console.log(error);
     res.status(500).send("Ошибка сервера");
@@ -43,6 +44,9 @@ export const getOnNextWeek = async (req, res) => {
     let endDate = new Date();
     let currentDayOfWeek = currentDate.getDay();
 
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(0, 0, 0, 0); 
+
     startDate.setDate(
       currentDate.getDate() -
         currentDayOfWeek +
@@ -55,6 +59,7 @@ export const getOnNextWeek = async (req, res) => {
         $lte: endDate,
       },
     });
+    
     res.json(schedule);
   } catch (error) {
     console.log(error);
@@ -68,6 +73,9 @@ export const getOnNextWeekAup = async (req, res) => {
     let startDate = new Date();
     let endDate = new Date();
     let currentDayOfWeek = currentDate.getDay();
+
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(0, 0, 0, 0); 
 
     startDate.setDate(
       currentDate.getDate() -
@@ -104,6 +112,9 @@ export const exportSchedule = async (req, res) => {
     let startDate = new Date();
     let endDate = new Date();
     let currentDayOfWeek = currentDate.getDay();
+
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(0, 0, 0, 0); 
 
     startDate.setDate(
       currentDate.getDate() -
@@ -217,6 +228,9 @@ export const exportScheduleToAup = async (req, res) => {
     let startDate = new Date();
     let endDate = new Date();
     let currentDayOfWeek = currentDate.getDay();
+
+    startDate.setHours(0, 0, 0, 0); 
+    endDate.setHours(0, 0, 0, 0); 
 
     startDate.setDate(
       currentDate.getDate() -

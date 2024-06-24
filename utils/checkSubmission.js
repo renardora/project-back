@@ -15,7 +15,8 @@ export const chbr = async (req, res, next) => {
       const endOfWeek = new Date(
         today.setDate(today.getDate() - today.getDay() + 7)
       );
-
+      startOfWeek.setHours(0, 0, 0, 0);
+      endOfWeek.setHours(0, 0, 0, 0);
       // Поиск записей расписания пользователя за текущую неделю
       const submissions = await ScheduleModel.find({
         userId: user,
@@ -24,6 +25,7 @@ export const chbr = async (req, res, next) => {
           $lte: endOfWeek,
         },
       });
+      console.log(submissions.length > 0);
       res.status(200).json({ isSubmitted: submissions.length > 0 });
 
       next();
@@ -47,7 +49,8 @@ export const aup = async (req, res, next) => {
       const endOfWeek = new Date(
         today.setDate(today.getDate() - today.getDay() + 7)
       );
-
+      startOfWeek.setHours(0, 0, 0, 0);
+      endOfWeek.setHours(0, 0, 0, 0);
       // Поиск записей расписания пользователя за текущую неделю
       const submissions = await ScheduleAupModel.find({
         userId: user,
@@ -70,7 +73,7 @@ export const topWorker = async (req, res, next) => {
   if (token) {
     try {
       const user = req.userId;
-      
+
       const currentDate = new Date();
       let startDate = new Date();
       let endDate = new Date();
@@ -82,7 +85,7 @@ export const topWorker = async (req, res, next) => {
         );
         endDate = new Date(
           currentDate.getFullYear(),
-          currentDate.getMonth()+1,
+          currentDate.getMonth() + 1,
           25
         );
       } else {
@@ -97,7 +100,7 @@ export const topWorker = async (req, res, next) => {
           25
         );
       }
-      
+
       const submissions = await TopWorkerModel.find({
         currentUserId: user,
         createdAt: {
@@ -105,7 +108,7 @@ export const topWorker = async (req, res, next) => {
           $lte: endDate,
         },
       });
-      
+
       res.status(200).json({ isSubmitted: submissions.length > 0 });
 
       next();
